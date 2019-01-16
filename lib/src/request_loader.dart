@@ -5,64 +5,64 @@ import 'package:flutter_base_request/src/request_callback.dart';
 import 'package:flutter_base_request/src/request_type.dart';
 import 'package:http/http.dart' as http;
 
-class RequestLoader<T> {
+class BaseRequestLoader<T> {
   String _baseUrl;
   String _newBaseUrl;
   String _endPointUrl;
   int _requestType;
-  RequestCallback<T> _callback;
+  BaseRequestCallback<T> _callback;
   Map<String, String> _headers = Map();
   Map<String, dynamic> _params;
   bool _isAuthRequest;
   String _authToken;
-  int _timeout = Constant.timeout;
+  int _timeout = BaseConstant.timeout;
 
-  RequestLoader<T> addBaseUrl(String baseUrl) {
+  BaseRequestLoader<T> addBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
     return this;
   }
 
-  RequestLoader<T> changeBaseUrl(String newBaseUrl) {
+  BaseRequestLoader<T> changeBaseUrl(String newBaseUrl) {
     _newBaseUrl = newBaseUrl;
     return this;
   }
 
-  RequestLoader<T> addRequestUrl(String endPointUrl) {
+  BaseRequestLoader<T> addRequestUrl(String endPointUrl) {
     _endPointUrl = endPointUrl;
     return this;
   }
 
-  RequestLoader<T> addRequestMethod(int requestType) {
+  BaseRequestLoader<T> addRequestMethod(int requestType) {
     _requestType = requestType;
     return this;
   }
 
-  RequestLoader<T> addHeaders(Map<String, String> header) {
+  BaseRequestLoader<T> addHeaders(Map<String, String> header) {
     header.addAll(header);
     return this;
   }
 
-  RequestLoader<T> addParams(Map<String, dynamic> params) {
+  BaseRequestLoader<T> addParams(Map<String, dynamic> params) {
     _params = params;
     return this;
   }
 
-  RequestLoader<T> addCallback(RequestCallback<T> callback) {
+  BaseRequestLoader<T> addCallback(BaseRequestCallback<T> callback) {
     _callback = callback;
     return this;
   }
 
-  RequestLoader<T> isAuthRequest(bool isAuthRequest) {
+  BaseRequestLoader<T> isAuthRequest(bool isAuthRequest) {
     _isAuthRequest = isAuthRequest;
     return this;
   }
 
-  RequestLoader<T> addAuthToken(String token) {
+  BaseRequestLoader<T> addAuthToken(String token) {
     _authToken = token;
     return this;
   }
 
-  RequestLoader<T> setTimeout(int timeout) {
+  BaseRequestLoader<T> setTimeout(int timeout) {
     _timeout = timeout;
     return this;
   }
@@ -85,17 +85,17 @@ class RequestLoader<T> {
       print(
           "RequestLoader=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
       switch (_requestType) {
-        case RequestType.POST:
+        case BaseRequestType.POST:
           response = await http
               .post(url, headers: _headers, body: json.encode(_params))
               .timeout(Duration(seconds: _timeout));
           break;
-        case RequestType.GET:
+        case BaseRequestType.GET:
           response = await http
               .get(url, headers: _headers)
               .timeout(Duration(seconds: _timeout));
           break;
-        case RequestType.PUT:
+        case BaseRequestType.PUT:
           response = await http
               .put(url, headers: _headers, body: json.encode(_params))
               .timeout(Duration(seconds: _timeout));
@@ -112,8 +112,8 @@ class RequestLoader<T> {
         print(
             "RequestLoader=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
         if (_callback != null) {
-          if (statusCode < Constant.statusCodeSuccess ||
-              statusCode >= Constant.statusCodeError) {
+          if (statusCode < BaseConstant.statusCodeSuccess ||
+              statusCode >= BaseConstant.statusCodeError) {
             _callback.onError(new RequestException(statusCode, response.body));
           } else {
             _callback.onCompleted(json.decode(jsonResponse));

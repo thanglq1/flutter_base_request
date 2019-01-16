@@ -3,64 +3,64 @@ import 'package:flutter_base_request/src/request_callback.dart';
 import 'request_loader.dart';
 import 'dart:async';
 
-class RequestFactory<T> {
+class BaseRequestFactory<T> {
   String _baseUrl;
   String _newBaseUrl;
   String _endPointUrl;
   int _requestType;
-  RequestCallback<T> _callback;
+  BaseRequestCallback<T> _callback;
   Map<String, String> _headers;
   Map<String, dynamic> _params;
   bool _isAuthRequest = true;
   String _authToken;
-  int _timeout = Constant.timeout;
+  int _timeout = BaseConstant.timeout;
 
-  RequestFactory<T> addBaseUrl(String baseUrl) {
+  BaseRequestFactory<T> addBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
     return this;
   }
 
-  RequestFactory<T> changeBaseUrl(String newBaseUrl) {
+  BaseRequestFactory<T> changeBaseUrl(String newBaseUrl) {
     _newBaseUrl = newBaseUrl;
     return this;
   }
 
-  RequestFactory<T> addEndPointUrl(String url) {
+  BaseRequestFactory<T> addEndPointUrl(String url) {
     _endPointUrl = url;
     return this;
   }
 
-  RequestFactory<T> addRequestMethod(int requestType) {
+  BaseRequestFactory<T> addRequestMethod(int requestType) {
     _requestType = requestType;
     return this;
   }
 
-  RequestFactory<T> addHeaders(Map<String, String> header) {
+  BaseRequestFactory<T> addHeaders(Map<String, String> header) {
     _headers = header;
     return this;
   }
 
-  RequestFactory<T> addParams(Map<String, dynamic> params) {
+  BaseRequestFactory<T> addParams(Map<String, dynamic> params) {
     _params = params;
     return this;
   }
 
-  RequestFactory<T> addCallback(RequestCallback<T> callback) {
+  BaseRequestFactory<T> addCallback(BaseRequestCallback<T> callback) {
     _callback = callback;
     return this;
   }
 
-  RequestFactory<T> isAuthRequest(bool isAuthRequest) {
+  BaseRequestFactory<T> isAuthRequest(bool isAuthRequest) {
     _isAuthRequest = isAuthRequest;
     return this;
   }
 
-  RequestFactory<T> addAuthToken(String token) {
+  BaseRequestFactory<T> addAuthToken(String token) {
     _authToken = token;
     return this;
   }
 
-  RequestFactory<T> setTimeout(int timeout) {
+  BaseRequestFactory<T> setTimeout(int timeout) {
     _timeout = timeout;
     return this;
   }
@@ -69,7 +69,7 @@ class RequestFactory<T> {
     if (_endPointUrl == null) throw Exception("Url must not be null");
     if (_requestType == null) throw Exception("Request type must not be null");
 
-    var requestLoader = new RequestLoader<T>();
+    var requestLoader = new BaseRequestLoader<T>();
     requestLoader.addRequestUrl(_endPointUrl);
     requestLoader.addRequestMethod(_requestType);
 

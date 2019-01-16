@@ -1,6 +1,6 @@
-class RequestCallback<T> {
+class BaseRequestCallback<T> {
 
-  RequestCallback(this.onStart, this.onCompleted, this.onError);
+  BaseRequestCallback(this.onStart, this.onCompleted, this.onError);
 
   Function onStart;
 
