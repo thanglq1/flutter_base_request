@@ -1,4 +1,3 @@
-import 'dart:_http';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_base_request/src/constant.dart';
@@ -80,9 +79,9 @@ class BaseRequestLoader<T> {
       if (_newBaseUrl != null && _newBaseUrl.length > 0) {
         _baseUrl = _newBaseUrl;
       }
-      _headers[HttpHeaders.contentTypeHeader] = "application/json";
+      _headers["content-type"] = "application/json";
       if (_isAuthRequest && _authToken.length > 0) {
-        _headers[HttpHeaders.authorizationHeader] = "bearer $_authToken";
+        _headers["authorization"] = "bearer $_authToken";
       }
       // set options
       Dio dio = Dio();
