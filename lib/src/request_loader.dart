@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_base_request/src/constant.dart';
 import 'package:flutter_base_request/src/request_callback.dart';
+import 'package:flutter_base_request/src/request_exception.dart';
 import 'package:flutter_base_request/src/request_type.dart';
 import 'package:http/http.dart' as http;
 
@@ -114,7 +115,7 @@ class BaseRequestLoader<T> {
         if (_callback != null) {
           if (statusCode < BaseConstant.statusCodeSuccess ||
               statusCode >= BaseConstant.statusCodeError) {
-            _callback.onError(new RequestException(statusCode, response.body));
+            _callback.onError(new BaseRequestException(statusCode, response.body));
           } else {
             _callback.onCompleted(json.decode(jsonResponse));
           }
@@ -125,11 +126,4 @@ class BaseRequestLoader<T> {
       if (_callback != null) _callback.onError(e);
     }
   }
-}
-
-class RequestException implements Exception {
-  int errorCode;
-  String errorMessage;
-
-  RequestException(this.errorCode, this.errorMessage);
 }
