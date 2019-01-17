@@ -83,15 +83,14 @@ class BaseRequestLoader<T> {
       if (_newBaseUrl != null && _newBaseUrl.length > 0) {
         _baseUrl = _newBaseUrl;
       }
-      _headers["content-type"] = "application/json";
+//      _headers["content-type"] = "application/json";
       if (_isAuthRequest && _authToken.length > 0) {
         _headers["authorization"] = "bearer $_authToken";
       }
       // set options
       Dio dio = Dio();
       dio.options.baseUrl = _baseUrl;
-//      dio.options.headers = _headers;
-      dio.options.headers.addAll(_headers);
+      dio.options.headers = _headers;
       dio.options.connectTimeout = _timeout;
       dio.options.receiveTimeout = _timeout;
 
