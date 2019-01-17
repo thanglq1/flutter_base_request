@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
 class BaseRequestLoader<T> {
+  static const TAG = "BaseRequestLoader";
+
   String _baseUrl;
   String _newBaseUrl;
   String _endPointUrl;
@@ -92,8 +94,8 @@ class BaseRequestLoader<T> {
       dio.options.connectTimeout = _timeout;
       dio.options.receiveTimeout = _timeout;
 
-      print(
-          "RequestLoader=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+      print(TAG +
+          "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
 
       Response response;
       switch (_requestType) {
@@ -113,7 +115,8 @@ class BaseRequestLoader<T> {
       if (response != null) {
         int statusCode = response.statusCode;
         String jsonResponse = response.data;
-        print("RequestLoader=>statusCode= $statusCode \n json=$jsonResponse");
+        print(TAG +
+            "dioRequest()=>statusCode= $statusCode \n json=$jsonResponse");
         if (_callback != null) {
           if (statusCode < BaseConstant.statusCodeSuccess ||
               statusCode >= BaseConstant.statusCodeError) {
@@ -125,10 +128,10 @@ class BaseRequestLoader<T> {
         }
       }
     } catch (e) {
-      print("error=" + e.toString());
+      print(TAG + "dioRequest()=>error=" + e.toString());
       if (e is DioError) {
         var error = e.response.data;
-        print("error=>data=" + error);
+        print(TAG + "dioRequest()=>error=>data=" + error);
       }
       if (_callback != null) _callback.onError(e);
     }
@@ -151,8 +154,8 @@ class BaseRequestLoader<T> {
       if (_isAuthRequest && _authToken.length > 0) {
         _headers["authorization"] = "bearer " + _authToken;
       }
-      print(
-          "RequestLoader=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+      print(TAG +
+          "httpRequest()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
       switch (_requestType) {
         case BaseRequestMethod.POST:
           response = await http
@@ -178,8 +181,8 @@ class BaseRequestLoader<T> {
       if (response != null) {
         int statusCode = response.statusCode;
         String jsonResponse = response.body;
-        print(
-            "RequestLoader=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
+        print(TAG +
+            "httpRequest()=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
         if (_callback != null) {
           if (statusCode < BaseConstant.statusCodeSuccess ||
               statusCode >= BaseConstant.statusCodeError) {
@@ -191,7 +194,7 @@ class BaseRequestLoader<T> {
         }
       }
     } catch (e) {
-      print("error=" + e.toString());
+      print(TAG + "httpRequest()=>error=" + e.toString());
       if (_callback != null) _callback.onError(e);
     }
   }
