@@ -98,16 +98,16 @@ class BaseRequestLoader<T> {
       Response response;
       switch (_requestType) {
         case BaseRequestMethod.POST:
-          response = await dio.post(_endPointUrl, data: json.encode(_params));
+          response = await dio.post(_endPointUrl, data: FormData.from(_params));
           break;
         case BaseRequestMethod.GET:
-          response = await dio.get(_endPointUrl, data: json.encode(_params));
+          response = await dio.get(_endPointUrl, data: FormData.from(_params));
           break;
         case BaseRequestMethod.PUT:
-          response = await dio.put(_endPointUrl, data: json.encode(_params));
+          response = await dio.put(_endPointUrl, data: FormData.from(_params));
           break;
         default:
-          response = await dio.get(_endPointUrl, data: json.encode(_params));
+          response = await dio.get(_endPointUrl, data: FormData.from(_params));
       }
 
       if (response != null) {
