@@ -123,6 +123,10 @@ class BaseRequestLoader<T> {
       }
     } catch (e) {
       print("error=" + e.toString());
+      if (e is DioError) {
+        var error = e.response.data;
+        print("error=>data=" + error);
+      }
       if (_callback != null) _callback.onError(e);
     }
   }
