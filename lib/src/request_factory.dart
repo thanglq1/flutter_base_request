@@ -88,7 +88,7 @@ class BaseRequestFactory<T> {
     requestLoader.addRequestUrl(_endPointUrl);
     requestLoader.addRequestMethod(_requestMethod);
     requestLoader.isAuthRequest(_isAuthRequest);
-    requestLoader.isContentTypeApplicationJsonRequest(_isAuthRequest);
+    requestLoader.isContentTypeApplicationJsonRequest(_isContentTypeApplicationJson);
     requestLoader.setTimeout(_timeout);
 
     if (_baseUrl != null && _baseUrl.length > 0)
