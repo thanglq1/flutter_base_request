@@ -136,7 +136,8 @@ class BaseRequestLoader<T> {
 
 // request with http lib
   Future httpRequest() async {
-    if (_endPointUrl.isEmpty) throw Exception('URL is empty!!');
+    if (_endPointUrl.isEmpty || _baseUrl.isEmpty)
+      throw Exception('URL is empty!!');
     http.Response response;
     if (_callback != null) {
       _callback.onStart();
