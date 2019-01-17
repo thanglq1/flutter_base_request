@@ -65,7 +65,7 @@ class BaseRequestFactory<T> {
 
   BaseRequestFactory<T> isContentTypeApplicationJsonRequest(
       bool isContentTypeApplicationJson) {
-    _isContentTypeApplicationJson = _isContentTypeApplicationJson;
+    _isContentTypeApplicationJson = isContentTypeApplicationJson;
     return this;
   }
 
