@@ -13,7 +13,7 @@ class BaseRequestLoader<T> {
   String _baseUrl;
   String _newBaseUrl;
   String _endPointUrl;
-  int _requestType;
+  int _requestMethod;
   BaseRequestCallback<T> _callback;
   Map<String, String> _headers = Map();
   Map<String, dynamic> _params;
@@ -37,7 +37,7 @@ class BaseRequestLoader<T> {
   }
 
   BaseRequestLoader<T> addRequestMethod(int requestType) {
-    _requestType = requestType;
+    _requestMethod = requestType;
     return this;
   }
 
@@ -90,7 +90,8 @@ class BaseRequestLoader<T> {
       // set options
       Dio dio = Dio();
       dio.options.baseUrl = _baseUrl;
-      dio.options.headers = _headers;
+//      dio.options.headers = _headers;
+      dio.options.headers.addAll(_headers);
       dio.options.connectTimeout = _timeout;
       dio.options.receiveTimeout = _timeout;
 
@@ -98,7 +99,7 @@ class BaseRequestLoader<T> {
           "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
 
       Response response;
-      switch (_requestType) {
+      switch (_requestMethod) {
         case BaseRequestMethod.POST:
           response = await dio.post(_endPointUrl, data: FormData.from(_params));
           break;
@@ -129,10 +130,6 @@ class BaseRequestLoader<T> {
       }
     } catch (e) {
       print(TAG + "dioRequest()=>error=" + e.toString());
-      if (e is DioError) {
-        var error = e.response.data;
-        print(TAG + "dioRequest()=>error=>data=" + error);
-      }
       if (_callback != null) _callback.onError(e);
     }
   }
@@ -156,7 +153,7 @@ class BaseRequestLoader<T> {
       }
       print(TAG +
           "httpRequest()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
-      switch (_requestType) {
+      switch (_requestMethod) {
         case BaseRequestMethod.POST:
           response = await http
               .post(url, headers: _headers, body: json.encode(_params))
