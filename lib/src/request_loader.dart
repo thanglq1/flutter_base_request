@@ -79,7 +79,7 @@ class BaseRequestLoader<T> {
     if (_callback != null) {
       _callback.onStart();
     }
-    try {
+//    try {
       if (_newBaseUrl != null && _newBaseUrl.length > 0) {
         _baseUrl = _newBaseUrl;
       }
@@ -90,26 +90,28 @@ class BaseRequestLoader<T> {
       // set options
       Dio dio = Dio();
       dio.options.baseUrl = _baseUrl;
-      dio.options.headers = _headers;
+      if (_headers != null) {
+        dio.options.headers = _headers;
+      }
       dio.options.connectTimeout = _timeout;
       dio.options.receiveTimeout = _timeout;
 
-      print(TAG +
-          "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
-
       Response response;
+      FormData formData = FormData.from(_params);
+      print(TAG + "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+
       switch (_requestMethod) {
         case BaseRequestMethod.POST:
-          response = await dio.post(_endPointUrl, data: FormData.from(_params));
+          response = await dio.post(_endPointUrl, data: formData);
           break;
         case BaseRequestMethod.GET:
-          response = await dio.get(_endPointUrl, data: FormData.from(_params));
+          response = await dio.get(_endPointUrl, data: formData);
           break;
         case BaseRequestMethod.PUT:
-          response = await dio.put(_endPointUrl, data: FormData.from(_params));
+          response = await dio.put(_endPointUrl, data: formData);
           break;
         default:
-          response = await dio.get(_endPointUrl, data: FormData.from(_params));
+          response = await dio.get(_endPointUrl, data: formData);
       }
 
       if (response != null) {
@@ -127,10 +129,10 @@ class BaseRequestLoader<T> {
           }
         }
       }
-    } catch (e) {
-      print(TAG + "dioRequest()=>error=" + e.toString());
-      if (_callback != null) _callback.onError(e);
-    }
+//    } catch (e) {
+//      print(TAG + "dioRequest()=>error=" + e.toString());
+//      if (_callback != null) _callback.onError(e);
+//    }
   }
 
 // request with http lib
