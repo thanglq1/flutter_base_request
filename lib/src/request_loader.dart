@@ -79,7 +79,7 @@ class BaseRequestLoader<T> {
     if (_callback != null) {
       _callback.onStart();
     }
-//    try {
+    try {
       if (_newBaseUrl != null && _newBaseUrl.length > 0) {
         _baseUrl = _newBaseUrl;
       }
@@ -116,7 +116,7 @@ class BaseRequestLoader<T> {
 
       if (response != null) {
         int statusCode = response.statusCode;
-        String jsonResponse = response.data;
+        String jsonResponse = response.data.toString();
         print(TAG +
             "dioRequest()=>statusCode= $statusCode \n json=$jsonResponse");
         if (_callback != null) {
@@ -129,10 +129,10 @@ class BaseRequestLoader<T> {
           }
         }
       }
-//    } catch (e) {
-//      print(TAG + "dioRequest()=>error=" + e.toString());
-//      if (_callback != null) _callback.onError(e);
-//    }
+    } catch (e) {
+      print(TAG + "dioRequest()=>error=" + e.toString());
+      if (_callback != null) _callback.onError(e);
+    }
   }
 
 // request with http lib
