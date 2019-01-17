@@ -14,6 +14,7 @@ class BaseRequestFactory<T> {
   Map<String, String> _headers;
   Map<String, dynamic> _params;
   bool _isAuthRequest = true;
+  bool _isContentTypeApplicationJson = true;
   String _authToken;
   int _timeout = BaseConstant.timeout;
 
@@ -62,6 +63,12 @@ class BaseRequestFactory<T> {
     return this;
   }
 
+  BaseRequestFactory<T> isContentTypeApplicationJsonRequest(
+      bool isContentTypeApplicationJson) {
+    _isContentTypeApplicationJson = _isContentTypeApplicationJson;
+    return this;
+  }
+
   BaseRequestFactory<T> addAuthToken(String token) {
     _authToken = token;
     return this;
@@ -81,6 +88,7 @@ class BaseRequestFactory<T> {
     requestLoader.addRequestUrl(_endPointUrl);
     requestLoader.addRequestMethod(_requestMethod);
     requestLoader.isAuthRequest(_isAuthRequest);
+    requestLoader.isContentTypeApplicationJsonRequest(_isAuthRequest);
     requestLoader.setTimeout(_timeout);
 
     if (_baseUrl != null && _baseUrl.length > 0)

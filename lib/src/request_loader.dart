@@ -18,6 +18,7 @@ class BaseRequestLoader<T> {
   Map<String, String> _headers = Map();
   Map<String, dynamic> _params;
   bool _isAuthRequest;
+  bool _isContentTypeApplicationJson;
   String _authToken;
   int _timeout = BaseConstant.timeout;
 
@@ -61,6 +62,12 @@ class BaseRequestLoader<T> {
     return this;
   }
 
+  BaseRequestLoader<T> isContentTypeApplicationJsonRequest(
+      bool isContentTypeApplicationJson) {
+    _isContentTypeApplicationJson = _isContentTypeApplicationJson;
+    return this;
+  }
+
   BaseRequestLoader<T> addAuthToken(String token) {
     _authToken = token;
     return this;
@@ -83,7 +90,10 @@ class BaseRequestLoader<T> {
       if (_newBaseUrl != null && _newBaseUrl.length > 0) {
         _baseUrl = _newBaseUrl;
       }
-//      _headers["content-type"] = "application/json";
+      if (_isContentTypeApplicationJson) {
+        _headers["content-type"] =
+            "application/json"; //api upload image not use content type application/json
+      }
       if (_isAuthRequest && _authToken.length > 0) {
         _headers["authorization"] = "bearer $_authToken";
       }
@@ -98,7 +108,8 @@ class BaseRequestLoader<T> {
 
       Response response;
       FormData formData = FormData.from(_params);
-      print(TAG + "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+      print(TAG +
+          "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
 
       switch (_requestMethod) {
         case BaseRequestMethod.POST:
@@ -125,7 +136,7 @@ class BaseRequestLoader<T> {
             _callback
                 .onError(new BaseRequestException(statusCode, jsonResponse));
           } else {
-            _callback.onCompleted(json.decode(jsonResponse));
+            _callback.onCompleted(response.data);
           }
         }
       }
