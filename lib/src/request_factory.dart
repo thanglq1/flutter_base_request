@@ -2,12 +2,14 @@ import 'package:flutter_base_request/src/constant.dart';
 import 'package:flutter_base_request/src/request_callback.dart';
 import 'request_loader.dart';
 import 'dart:async';
+import 'request_type.dart';
 
 class BaseRequestFactory<T> {
   String _baseUrl;
   String _newBaseUrl;
   String _endPointUrl;
-  int _requestType;
+  int _requestMethod;
+  BaseRequestType _requestType;
   BaseRequestCallback<T> _callback;
   Map<String, String> _headers;
   Map<String, dynamic> _params;
@@ -30,7 +32,12 @@ class BaseRequestFactory<T> {
     return this;
   }
 
-  BaseRequestFactory<T> addRequestMethod(int requestType) {
+  BaseRequestFactory<T> addRequestMethod(int requestMethod) {
+    _requestMethod = requestMethod;
+    return this;
+  }
+
+  BaseRequestFactory<T> addRequestType(BaseRequestType requestType) {
     _requestType = requestType;
     return this;
   }
@@ -67,11 +74,14 @@ class BaseRequestFactory<T> {
 
   Future doRequest() {
     if (_endPointUrl == null) throw Exception("Url must not be null");
-    if (_requestType == null) throw Exception("Request type must not be null");
+    if (_requestMethod == null)
+      throw Exception("Request type must not be null");
 
     var requestLoader = new BaseRequestLoader<T>();
     requestLoader.addRequestUrl(_endPointUrl);
-    requestLoader.addRequestMethod(_requestType);
+    requestLoader.addRequestMethod(_requestMethod);
+    requestLoader.isAuthRequest(_isAuthRequest);
+    requestLoader.setTimeout(_timeout);
 
     if (_baseUrl != null && _baseUrl.length > 0)
       requestLoader.addBaseUrl(_baseUrl);
@@ -79,21 +89,22 @@ class BaseRequestFactory<T> {
     if (_newBaseUrl != null && _newBaseUrl.length > 0)
       requestLoader.changeBaseUrl(_newBaseUrl);
 
-    if (_headers != null)
-      requestLoader.addHeaders(_headers);
+    if (_headers != null) requestLoader.addHeaders(_headers);
 
-    if (_params != null)
-      requestLoader.addParams(_params);
+    if (_params != null) requestLoader.addParams(_params);
 
-    if (_callback != null)
-      requestLoader.addCallback(_callback);
+    if (_callback != null) requestLoader.addCallback(_callback);
 
     if (_authToken != null && _authToken.length > 0)
       requestLoader.addAuthToken(_authToken);
 
-    requestLoader.isAuthRequest(_isAuthRequest);
-    requestLoader.setTimeout(_timeout);
-
-    return requestLoader.request();
+    switch (_requestType) {
+      case BaseRequestType.DIO:
+        return requestLoader.dioRequest();
+      case BaseRequestType.HTTP:
+        return requestLoader.httpRequest();
+      default:
+        return requestLoader.httpRequest();
+    }
   }
 }
