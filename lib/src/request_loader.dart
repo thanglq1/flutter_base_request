@@ -64,7 +64,7 @@ class BaseRequestLoader<T> {
 
   BaseRequestLoader<T> isContentTypeApplicationJsonRequest(
       bool isContentTypeApplicationJson) {
-    _isContentTypeApplicationJson = _isContentTypeApplicationJson;
+    _isContentTypeApplicationJson = isContentTypeApplicationJson;
     return this;
   }
 
