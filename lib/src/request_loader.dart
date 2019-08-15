@@ -6,6 +6,8 @@ import 'package:flutter_base_request/src/request_exception.dart';
 import 'package:flutter_base_request/src/request_method.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'package:http/io_client.dart';
+import 'dart:io';
 
 class BaseRequestLoader<T> {
   static const TAG = "BaseRequestLoader";
@@ -109,20 +111,20 @@ class BaseRequestLoader<T> {
       Response response;
       FormData formData = FormData.from(_params);
       print(TAG +
-          "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+          "dioRequestV2()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
 
       switch (_requestMethod) {
         case BaseRequestMethod.POST:
           response = await dio.post(_endPointUrl, data: formData);
           break;
         case BaseRequestMethod.GET:
-          response = await dio.get(_endPointUrl, data: formData);
+          response = await dio.get(_endPointUrl, queryParameters: _params);
           break;
         case BaseRequestMethod.PUT:
           response = await dio.put(_endPointUrl, data: formData);
           break;
         default:
-          response = await dio.get(_endPointUrl, data: formData);
+          response = await dio.get(_endPointUrl, queryParameters: _params);
       }
 
       if (response != null) {
@@ -164,25 +166,30 @@ class BaseRequestLoader<T> {
         _headers["authorization"] = "bearer " + _authToken;
       }
       print(TAG +
-          "httpRequest()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+          "httpRequestV2()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+      HttpClient httpClient = new HttpClient();
+      httpClient.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => true);
+      IOClient ioClient = new IOClient(httpClient);
+
       switch (_requestMethod) {
         case BaseRequestMethod.POST:
-          response = await http
+          response = await ioClient
               .post(url, headers: _headers, body: json.encode(_params))
               .timeout(Duration(milliseconds: _timeout));
           break;
         case BaseRequestMethod.GET:
-          response = await http
+          response = await ioClient
               .get(url, headers: _headers)
               .timeout(Duration(milliseconds: _timeout));
           break;
         case BaseRequestMethod.PUT:
-          response = await http
+          response = await ioClient
               .put(url, headers: _headers, body: json.encode(_params))
               .timeout(Duration(milliseconds: _timeout));
           break;
         default:
-          response = await http
+          response = await ioClient
               .get(url, headers: _headers)
               .timeout(Duration(milliseconds: _timeout));
       }
@@ -191,7 +198,7 @@ class BaseRequestLoader<T> {
         int statusCode = response.statusCode;
         String jsonResponse = response.body;
         print(TAG +
-            "httpRequest()=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
+            "httpRequestV2()=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
         if (_callback != null) {
           if (statusCode < BaseConstant.statusCodeSuccess ||
               statusCode >= BaseConstant.statusCodeError) {
@@ -203,7 +210,7 @@ class BaseRequestLoader<T> {
         }
       }
     } catch (e) {
-      print(TAG + "httpRequest()=>error=" + e.toString());
+      print(TAG + "httpRequestV2()=>error=" + e.toString());
       if (_callback != null) _callback.onError(e);
     }
   }
