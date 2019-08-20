@@ -10,7 +10,7 @@ import 'package:http/io_client.dart';
 import 'dart:io';
 
 class BaseRequestLoader<T> {
-  static const TAG = "BaseRequestLoader";
+  static const TAG = "BaseRequestLoaderV3";
 
   String _baseUrl;
   String _newBaseUrl;
@@ -99,8 +99,16 @@ class BaseRequestLoader<T> {
       if (_isAuthRequest && _authToken.length > 0) {
         _headers["authorization"] = "bearer $_authToken";
       }
-      // set options
       Dio dio = Dio();
+      // certificate always return true
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+      };
+      // set options
       dio.options.baseUrl = _baseUrl;
       if (_headers != null) {
         dio.options.headers = _headers;
@@ -111,7 +119,7 @@ class BaseRequestLoader<T> {
       Response response;
       FormData formData = FormData.from(_params);
       print(TAG +
-          "dioRequestV2()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+          "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
 
       switch (_requestMethod) {
         case BaseRequestMethod.POST:
@@ -166,7 +174,7 @@ class BaseRequestLoader<T> {
         _headers["authorization"] = "bearer " + _authToken;
       }
       print(TAG +
-          "httpRequestV2()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
+          "httpRequest()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
       HttpClient httpClient = new HttpClient();
       httpClient.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
@@ -198,7 +206,7 @@ class BaseRequestLoader<T> {
         int statusCode = response.statusCode;
         String jsonResponse = response.body;
         print(TAG +
-            "httpRequestV2()=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
+            "httpRequest()=>url= $url \n statusCode= $statusCode \n json=$jsonResponse");
         if (_callback != null) {
           if (statusCode < BaseConstant.statusCodeSuccess ||
               statusCode >= BaseConstant.statusCodeError) {
@@ -210,7 +218,7 @@ class BaseRequestLoader<T> {
         }
       }
     } catch (e) {
-      print(TAG + "httpRequestV2()=>error=" + e.toString());
+      print(TAG + "httpRequest()=>error=" + e.toString());
       if (_callback != null) _callback.onError(e);
     }
   }
