@@ -16,20 +16,7 @@ class BaseRequestFactory<T> {
   bool _isAuthRequest = true;
   bool _isContentTypeApplicationJson = true;
   String _authToken;
-  String _pem;
-  bool _isCertificate = false;
   int _timeout = BaseConstant.timeout;
-
-
-  BaseRequestFactory<T> addCertificate(String pem) {
-    _pem = pem;
-    return this;
-  }
-
-  BaseRequestFactory<T> isCertificate(bool isCertificate) {
-    _isCertificate = isCertificate;
-    return this;
-  }
 
   BaseRequestFactory<T> addBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
@@ -101,10 +88,6 @@ class BaseRequestFactory<T> {
     requestLoader.addRequestUrl(_endPointUrl);
     requestLoader.addRequestMethod(_requestMethod);
     requestLoader.isAuthRequest(_isAuthRequest);
-    requestLoader.isCertificate(_isCertificate);
-    if (_isCertificate && _pem != null && _pem.length > 0) {
-      requestLoader.addCertificate(_pem);
-    }
     requestLoader.isContentTypeApplicationJsonRequest(_isContentTypeApplicationJson);
     requestLoader.setTimeout(_timeout);
 
