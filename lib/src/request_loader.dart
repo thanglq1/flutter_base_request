@@ -10,7 +10,7 @@ import 'package:http/io_client.dart';
 import 'dart:io';
 
 class BaseRequestLoader<T> {
-  static const TAG = "BaseRequestLoaderV3";
+  static const TAG = "BaseRequestLoaderV4=>";
 
   String _baseUrl;
   String _newBaseUrl;
@@ -22,10 +22,22 @@ class BaseRequestLoader<T> {
   bool _isAuthRequest;
   bool _isContentTypeApplicationJson;
   String _authToken;
+  String _pem;
+  bool _isCertificate = false;
   int _timeout = BaseConstant.timeout;
 
   BaseRequestLoader<T> addBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
+    return this;
+  }
+
+  BaseRequestLoader<T> addCertificate(String pem) {
+    _pem = pem;
+    return this;
+  }
+
+  BaseRequestLoader<T> isCertificate(bool isCertificate) {
+    _isCertificate = isCertificate;
     return this;
   }
 
@@ -101,13 +113,20 @@ class BaseRequestLoader<T> {
       }
       Dio dio = Dio();
       // certificate always return true
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
+      if (_isCertificate) {
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (client) {
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) {
+            if (_pem != null && _pem.length > 0 && _pem == cert.pem) {
+              print(TAG + " dio request pass certificate");
+              return true;
+            }
+            print(TAG + " dio request ko pass certificate");
+            return false;
+          };
         };
-      };
+      }
       // set options
       dio.options.baseUrl = _baseUrl;
       if (_headers != null) {
