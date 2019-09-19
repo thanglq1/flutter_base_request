@@ -10,7 +10,7 @@ import 'package:http/io_client.dart';
 import 'dart:io';
 
 class BaseRequestLoader<T> {
-  static const TAG = "BaseRequestLoaderV3";
+  static const TAG = "BaseRequestLoaderV4";
 
   String _baseUrl;
   String _newBaseUrl;
@@ -165,6 +165,8 @@ class BaseRequestLoader<T> {
     if (_callback != null) {
       _callback.onStart();
     }
+    HttpClient httpClient;
+    IOClient ioClient;
     try {
       String url = _baseUrl + _endPointUrl;
       if (_newBaseUrl != null && _newBaseUrl.length > 0) {
@@ -176,10 +178,10 @@ class BaseRequestLoader<T> {
       }
       print(TAG +
           "httpRequest()=>url= $url \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
-      HttpClient httpClient = new HttpClient();
+      httpClient = new HttpClient();
       httpClient.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
-      IOClient ioClient = new IOClient(httpClient);
+      ioClient = new IOClient(httpClient);
 
       switch (_requestMethod) {
         case BaseRequestMethod.POST:
@@ -217,10 +219,15 @@ class BaseRequestLoader<T> {
             _callback.onCompleted(json.decode(jsonResponse));
           }
         }
+
+        if (ioClient != null) ioClient.close();
+        if (httpClient != null) httpClient.close();
       }
     } catch (e) {
       print(TAG + "httpRequest()=>error=" + e.toString());
       if (_callback != null) _callback.onError(e);
+      if (ioClient != null) ioClient.close();
+      if (httpClient != null) httpClient.close();
     }
   }
 }
