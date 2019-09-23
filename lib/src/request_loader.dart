@@ -10,7 +10,7 @@ import 'package:http/io_client.dart';
 import 'dart:io';
 
 class BaseRequestLoader<T> {
-  static const TAG = "BaseRequestLoaderV4";
+  static const TAG = "BaseRequestLoaderV5 ";
 
   String _baseUrl;
   String _newBaseUrl;
@@ -220,14 +220,14 @@ class BaseRequestLoader<T> {
           }
         }
 
-        if (ioClient != null) ioClient.close();
-        if (httpClient != null) httpClient.close();
+//        if (ioClient != null) ioClient.close();
+//        if (httpClient != null) httpClient.close();
       }
     } catch (e) {
       print(TAG + "httpRequest()=>error=" + e.toString());
       if (_callback != null) _callback.onError(e);
-      if (ioClient != null) ioClient.close();
-      if (httpClient != null) httpClient.close();
+//      if (ioClient != null) ioClient.close();
+//      if (httpClient != null) httpClient.close();
     }
   }
 }
