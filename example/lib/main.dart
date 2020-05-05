@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_base_request/flutter_base_request.dart';
 
@@ -20,11 +19,12 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
     String baseUrl = "http://192.168.1.1";
     String endPointUrl = "/api/user/profile/123";
-    RequestFactory()
+
+    BaseRequestFactory()
         .addBaseUrl(baseUrl)
         .addEndPointUrl(endPointUrl)
-        .addRequestMethod(RequestType.GET)
-        .addCallback(new RequestCallback(() {}, (data) {}, (e) {}))
+        .addRequestMethod(BaseRequestMethod.GET)
+        .addCallback(new BaseRequestCallback(() {}, (data) {}, (e) {}))
         .doRequest();
   }
 
