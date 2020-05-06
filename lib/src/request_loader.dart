@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:dio/adapter.dart';
 import 'package:flutter_base_request/src/constant.dart';
 import 'package:flutter_base_request/src/request_callback.dart';
 import 'package:flutter_base_request/src/request_exception.dart';
@@ -118,7 +119,7 @@ class BaseRequestLoader<T> {
       dio.options.receiveTimeout = _timeout;
 
       Response response;
-      FormData formData = FormData.from(_params);
+      FormData formData = FormData.fromMap(_params);
       print(TAG +
           "dioRequest()=>baseurl= $_baseUrl \n endPointUrl= $_endPointUrl \n params= $_params \n isAuthor=$_isAuthRequest \n headers= _$_headers");
 
